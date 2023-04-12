@@ -76,8 +76,10 @@ import seaborn as sns
 
 #%%
 # Import Data
-sales = pd.read_csv("Computer_Assisted_Mass_Appraisal_-_Residential_3-24-23.csv")
+sales = pd.read_csv("Computer_Assisted_Mass_Appraisal_-_Residential_3-24-23.csv", parse_dates=["SALEDATE"])
 
+# Rename columns to lowercase for convenience
+sales.columns= sales.columns.str.lower()
 #%%
 # Check data
 print(sales.shape)
@@ -86,28 +88,76 @@ print(sales.head())
 
 
 ### Preprocessing
+## Creating new variables
+#%%
+# Create new variables for the year, month, and day to work with
+sales["sale_year"] = sales["saledate"].dt.year
+sales["sale_month"] = sales["saledate"].dt.month
+sales["sale_day"] = sales["saledate"].dt.day
+
+# Create a boolean variable for if the property sold for a price over $)
+sales.insert(sales.columns.get_loc("price")+1, "with_price", sales["price"].apply(lambda x: False if x == 0 else True))
+
+# Create a boolean for if the property was remodeled
+sales.insert(sales.columns.get_loc("yr_rmdl")+1, "remodeled", sales["yr_rmdl"].notnull())
+
+#%%
+# Create variables looking at how much time has passed since January 1 2010, the start date of the subset we are working with
+def year_diff(a, b):
+    return (a.dt.year - b.year)
+
+def month_diff(a, b):
+    return 12 * (a.dt.year - b.year) + (a.dt.month - b.month)
+
+sales["num_years_passed"] = year_diff(sales["saledate"], pd.Timestamp("2010/01/01 00:00:00+00"))
+sales["num_months_passed"] = month_diff(sales["saledate"], pd.Timestamp("2010/01/01 00:00:00+00"))
+sales["num_days_passed"] = (sales["saledate"] - pd.Timestamp("2010/01/01 00:00:00+00")).dt.days
 
 
-# Sales per year
-
-# Sales per year with price vs no price
-
-
-# Number of years/months/days since 1/1/2010
-
-# Other munging
-
-# Removing unneeded variables
+## Sales per year
+#%%
+sales["sale_year"].value_counts()
+# Make bar chart for this
+# Sales per year with price vs no price stacked bar chart
 
 
+## Other preprocessing (not sure what else is needed)
 
+#%%
+## Removing unneeded variables and filtering
+cols_to_drop = ["ssl", "gis_last_mod_dttm", "objectid"]
+
+sales_trimmed = sales[(sales["sale_year"] >= 2010) & (sales["sale_year"] < 2023)].drop(cols_to_drop, axis = 1)
+
+#%%
 ### EDA
+
+
+
+
 
 ### Descriptive Characteristics
 
+
+
+
+
 ### Modeling Sales Price (linear and multiple regression)
+#%%
+# For this it makes sense to only use sales where the property sold for a price, not for $0
+sales_trimmed_with_price = sales_trimmed[sales_trimmed["with_price"] == True]
+
+
+
+
 
 ### Modeling if the property sold for a price (logistic regression)
 
+
+
+
+
 ### COVID Comparison
 
+
+# %%
