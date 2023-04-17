@@ -116,10 +116,20 @@ sales["num_days_passed"] = (sales["saledate"] - pd.Timestamp("2010/01/01 00:00:0
 
 ## Sales per year
 #%%
-sales["sale_year"].value_counts()
-# Make bar chart for this
+print(sales["sale_year"].value_counts())
+
 # Sales per year with price vs no price stacked bar chart
 
+#%%
+# Bar chart of sales per year
+year_graph_data = sales["sale_year"].value_counts().rename_axis(["sale_year"]).reset_index(name = "count")
+
+year_graph = sns.barplot(data = year_graph_data, x = "sale_year", y = "count", color = "steelblue")
+year_graph.set(title = "Number of Sales by Year", xlabel = "Year")
+year_graph.set_xticks(range(0, 69, 5))
+plt.show()
+
+# I would love to iunclude a stacked bar chart based on with_price, but could not make it work.
 
 ## Other preprocessing (not sure what else is needed)
 
