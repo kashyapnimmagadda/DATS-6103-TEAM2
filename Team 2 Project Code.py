@@ -117,9 +117,8 @@ sales["num_days_passed"] = (sales["saledate"] - pd.Timestamp("2010/01/01 00:00:0
 ## Sales per year
 #%%
 print(sales["sale_year"].value_counts())
-
+# Make bar chart for this
 # Sales per year with price vs no price stacked bar chart
-
 #%%
 # Bar chart of sales per year
 year_graph_data = sales["sale_year"].value_counts().rename_axis(["sale_year"]).reset_index(name = "count")
@@ -142,32 +141,171 @@ sales_trimmed = sales[(sales["sale_year"] >= 2010) & (sales["sale_year"] < 2023)
 #%%
 ### EDA
 
-
-
-
-
-### Descriptive Characteristics
-
-
-
-
-
-### Modeling Sales Price (linear and multiple regression)
 #%%
+print(sales_trimmed.shape)
+print(sales_trimmed.info())
 # For this it makes sense to only use sales where the property sold for a price, not for $0
 sales_trimmed_with_price = sales_trimmed[sales_trimmed["with_price"] == True]
 
+#%%
+
+fig, axs = plt.subplots(ncols=2, figsize=(15,5))
+
+# Histogram of the number of properties sold by year
+axs[0].hist(sales["sale_year"], bins=range(2010,2024), edgecolor='black')
+axs[0].set_xlabel("Year")
+axs[0].set_ylabel("Number of Properties Sold")
+axs[0].set_title("Number of Properties Sold by Year")
+
+# Histogram of the number of properties sold by month
+axs[1].hist(sales["sale_month"], bins=range(1,13), edgecolor='black')
+axs[1].set_xlabel("Month")
+axs[1].set_ylabel("Number of Properties Sold")
+axs[1].set_title("Number of Properties Sold by Month")
+
+plt.show()
 
 
+price_counts = sales["with_price"].value_counts()
 
+# Bar chart of the sales by price
+plt.bar(["With Price", "Without Price"], price_counts.values)
+plt.xlabel("Price")
+plt.ylabel("Number of Sales")
+plt.title("Sales by Price")
+plt.show()
 
+# Total Count of number of sales with and without a remodel
+remodel_counts = sales["remodeled"].value_counts()
+
+# Bar chart of the sales by remodel status
+plt.bar(["Remodeled", "Not Remodeled"], remodel_counts.values)
+plt.xlabel("Remodel Status")
+plt.ylabel("Number of Sales")
+plt.title("Sales by Remodel Status")
+plt.show()
+# Sales per year with price vs no price stacked bar chart``
+
+#change to years 2010 throough 2021
+sales_subset = sales[(sales["sale_year"] >= 2010) & (sales["sale_year"] < 2023)]
+sales_with_price = sales_subset.groupby(["sale_year", "with_price"]).size().unstack(fill_value=0)
+sales_with_price.plot(kind="bar", stacked=True)
+plt.xlabel("Year")
+plt.ylabel("Number of Sales")
+plt.title("Sales Per Year With/Without Price")
+plt.show()
+
+#%%
+plt.figure(figsize=(10,6))
+sns.histplot(sales_trimmed_with_price['price'], kde=True)
+plt.xlim(0, 0.5e7)
+plt.title('Distribution of Sale Prices')
+plt.xlabel('Sale Price')
+plt.show()
+
+#%%
+median_prices_by_year = sales_trimmed_with_price.groupby("sale_year")["price"].median().reset_index(name="median_price")
+
+sns.lineplot(x="sale_year", y="median_price", data=median_prices_by_year)
+plt.xlabel("Sale Year")
+plt.ylabel("Median Sale Price")
+plt.title("Median Sale Price by Year")
+plt.show()
+
+#%%
+# Computing the correlation matrix
+corr = sales_trimmed.corr()
+
+mask = np.triu(np.ones_like(corr, dtype=bool))
+
+# Set up the matplotlib figure
+f, ax = plt.subplots(figsize=(11, 9))
+
+# Generating a custom diverging colormap
+cmap = sns.diverging_palette(10, 220, sep=80, n=7)
+
+# Heatmap with the mask and correct aspect ratio
+sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+            square=True, linewidths=.5, cbar_kws={"shrink": .5})
+#%%
+print(corr)
+
+#%%
+### Descriptive Characteristics
+
+summary_stats = sales_trimmed.describe()
+print(summary_stats)
+
+#%%
+# Creating scatterplots of highly correlated variables
+sns.boxplot(x='bathrm', y='price', data=sales_trimmed_with_price)
+plt.title('Bathrooms vs. Price')
+plt.show()
+
+sns.boxplot(x='rooms', y='price', data=sales_trimmed_with_price)
+plt.title('Rooms vs. Price')
+plt.show()
+
+sns.boxplot(x='bedrm', y='price', data=sales_trimmed_with_price)
+plt.title('Bedrooms vs. Price')
+plt.show()
+
+sns.scatterplot(x='gba', y='price', data=sales_trimmed_with_price)
+plt.title('Gross Building Area vs. Price')
+plt.show()
+
+sns.boxplot(x='kitchens', y='price', data=sales_trimmed)
+plt.title('Kitchens vs. Price')
+plt.show()
+
+# Filter the data based on Year Built range
+df_filtered = sales_trimmed_with_price[(sales_trimmed_with_price["ayb"] >= 2010) & (sales_trimmed_with_price["ayb"] <= 2023)]
+
+plt.scatter(df_filtered["ayb"], df_filtered["price"])
+plt.xlabel("Year Built")
+plt.ylabel("Price")
+plt.title("Scatter plot of Price vs Year Built (2010-2023)")
+plt.show()
+
+# Scatter plot of num_units vs price
+plt.scatter(sales_trimmed_with_price['num_units'], sales_trimmed_with_price['price'])
+plt.xlabel('Number of Units')
+plt.ylabel('Price')
+plt.show()
+#%%
+sns.boxplot(x="cndtn", y="price", data=sales_trimmed_with_price)
+plt.title("Sale Price by Condition")
+plt.xlabel("Condition")
+plt.ylabel("Sale Price")
+plt.show()
+#%%
+import seaborn as sns
+
+sns.countplot(x='cndtn', data=sales_trimmed_with_price)
+plt.xlabel('Condition')
+plt.ylabel('Number of Properties')
+plt.title('Number of Properties per Condition Category')
+plt.show()
+
+#%%
 ### Modeling if the property sold for a price (logistic regression)
-
-
-
-
-
 ### COVID Comparison
 
+#%%
+
+bathroom_freq = sales_trimmed_with_price["bathrm"].value_counts().sort_index()
+plt.bar(bathroom_freq.index, bathroom_freq.values, edgecolor='black')
+plt.xlabel("Number of Bathrooms")
+plt.ylabel("Frequency")
+plt.title("Bar graph of Number of Bathrooms")
+plt.show()
+
+
+#Not useful
+# Bar plot of extwall
+plt.bar(sales_trimmed_with_price['extwall'], sales_trimmed_with_price['price'])
+plt.xlabel('Exterior Wall Type')
+plt.ylabel('Price')
+plt.show()
 
 # %%
