@@ -1,3 +1,4 @@
+#%%[markdown]
 # DATS-6103-11 Group Project - Team 2
 # Spring 2023
 # Group members: Muhannad Alwhebie, Brian Gulko, Mengfei Hung, Kashyap Nimmagadda
@@ -307,8 +308,7 @@ plt.title('Number of Properties per Condition Category')
 plt.show()
 
 #%%
-### Modeling if the property sold for a price (logistic regression)
-### COVID Comparison
+
 
 #%%
 
@@ -328,3 +328,215 @@ plt.ylabel('Price')
 plt.show()
 
 # %%
+### Building LR Model as price as indep to addrees the SMART Q
+# Import required libraries
+
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Drop rows with missing values
+sales_trimmed_with_price = sales_trimmed_with_price.dropna()
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(sales_trimmed_with_price[['bathrm', 'bedrm', 'grade']], sales_trimmed_with_price['price'], test_size=0.2, random_state=42)
+
+# Instantiate the linear regression model
+model = LinearRegression()
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = model.predict(X_test)
+
+# Evaluate the model's performance
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("Mean squared error:", mse)
+print("R-squared:", r2)
+
+
+##Interp: The output shows the Mean Squared Error (MSE) and R-squared values of the linear regression model.
+
+#The mean squared error measures the average of the squared differences between the predicted values and actual values of the target variable. The MSE value of 2.2  (approximately) means that, on average, the model's predictions are off by about 14.9 million dollars from the actual price of the property.
+
+#The R-squared value is a statistical measure that represents the proportion of variance in the target variable that is explained by the predictor variables. In this case, the R-squared value of 0.58 means that the model explains 58% of the variance in the target variable, while the remaining 42% of the variance is unexplained by the model. This indicates that the model may not be capturing all the important factors that determine the price of a property.
+
+# %%
+## addin heat as predictor 
+
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(sales_trimmed_with_price[['bathrm', 'bedrm', 'grade', 'heat']], sales_trimmed_with_price['price'], test_size=0.2, random_state=42)
+
+# Instantiate the linear regression model
+model = LinearRegression()
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = model.predict(X_test)
+
+# Evaluate the model's performance
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("Mean squared error:", mse)
+print("R-squared:", r2)
+##The new output shows that adding the 'heat' variable did not have a significant impact on the model's performance as the Mean Squared Error (MSE) and R-squared values are almost similar to the previous model's output. The MSE value of 2.22  (approximately) means that, on average, the model's predictions are off by about 14.9 million dollars from the actual price of the property. The R-squared value of 0.58 means that the model explains 58.4% of the variance in the target variable, while the remaining 41.6% of the variance is unexplained by the model. This indicates that there may be other important factors that influence the price of a property that the model has not captured.
+# %%
+#updated code that includes heat and cndtn as additional predictor variables:
+
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(
+    sales_trimmed_with_price[['bathrm', 'bedrm', 'grade', 'heat', 'cndtn']],
+    sales_trimmed_with_price['price'],
+    test_size=0.2,
+    random_state=42
+)
+
+# Instantiate the linear regression model
+model = LinearRegression()
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = model.predict(X_test)
+
+# Evaluate the model's performance
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("Mean squared error:", mse)
+print("R-squared:", r2)
+
+# Print the coefficients of the model
+print("Coefficients:", model.coef_)
+#Based on the output, we can see that the model with the additional predictor variables (heat and cndtn) has a lower mean squared error and a higher R-squared value compared to the model with only bathrm, bedrm, and grade. This suggests that the inclusion of heat and cndtn as predictor variables has improved the model's ability to predict the sale price of residential properties.
+
+#To answer the specific questions:
+
+#Is there a correlation between the number of bedrooms and the sale price of a residential property in this dataset?
+#The coefficient for bedrm in the model is 13,941. This means that, all other variables being equal, a one-unit increase in the number of bedrooms is associated with a $13,941 increase in the sale price of the property. This indicates that there is a positive correlation between the number of bedrooms and the sale price of a residential property in this dataset.
+
+#Is there a correlation between the grade and the sale price of a residential property in this dataset?
+#The coefficient for grade in the model is 303,631. This means that, all other variables being equal, a one-unit increase in the grade is associated with a $303,631 increase in the sale price of the property. This indicates that there is a strong positive correlation between the grade and the sale price of a residential property in this dataset.
+
+#Is there a correlation between gross building area and sale price?
+#Gross building area is not included as a predictor variable in the model. Therefore, we cannot determine the correlation between gross building area and sale price based on this model.
+# %%
+# Adding  gross building area another predictor 
+
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(
+    sales_trimmed_with_price[['bathrm', 'bedrm', 'grade', 'heat', 'cndtn', 'gba']],
+    sales_trimmed_with_price['price'],
+    test_size=0.2,
+    random_state=42
+)
+
+# Instantiate the linear regression model
+model = LinearRegression()
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = model.predict(X_test)
+
+# Evaluate the model's performance
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("Mean squared error:", mse)
+print("R-squared:", r2)
+
+# Print the coefficients of the model
+print("Coefficients:", model.coef_)
+
+#The updated model includes the "GBA" variable as an additional predictor variable to investigate its impact on sale price. The output shows an improved performance of the model with a lower mean squared error of approximately 1.64 and a higher R-squared value of approximately 0.69. This indicates that the addition of the "GBA" variable has improved the model's ability to explain the variance in the target variable.
+
+#The coefficients of the model suggest that the "GBA" variable has a positive impact on the sale price, with a coefficient value of 250701.29. This means that, on average, for every one-unit increase in the gross building area, the sale price of the property is expected to increase by approximately $250,701.
+
+
+
+# %%
+# Gradient Boosting Classifier model for property was sold for more than $500,000 or not
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.metrics import plot_confusion_matrix
+from sklearn.ensemble import GradientBoostingClassifier
+
+# Define the predictor variables
+X = sales_trimmed_with_price[['bathrm', 'bedrm', 'gba', 'cndtn']]
+
+# Define the threshold
+threshold = 500000 
+
+# Define the binary target variable
+y = (sales_trimmed_with_price['price'] > threshold).astype(int)
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Instantiate the Gradient Boosting Classifier model
+model = GradientBoostingClassifier()
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = model.predict(X_test)
+
+# Evaluate the model's performance
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+
+print("Accuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+
+# Plot the confusion matrix
+plot_confusion_matrix(model, X_test, y_test, cmap=plt.cm.Blues)
+plt.title('Confusion matrix for Gradient Boosting Classifier Model')
+plt.show()
+
+# Prepare the cross-validation procedure
+cv = KFold(n_splits=10, random_state=1, shuffle=True)
+
+# Instantiate the Gradient Boosting Classifier model
+model = GradientBoostingClassifier()
+
+# Evaluate the model using cross-validation
+scores = cross_val_score(model, X, y, cv=cv, n_jobs=-1)
+
+# Report performance
+print('Accuracy: %.3f (%.3f)' % (scores.mean(), scores.std()))
+
+#The output shows the performance of the Gradient Boosting Classifier model for predicting whether a property was sold for more than $500,000 or not.
+
+#The model achieved an accuracy of 0.812, which means that it correctly predicted 81.2% of the test cases. It also achieved a precision of 0.841, which means that out of all the properties that the model predicted were sold for more than $500,000, 84.1% of them were actually sold for that price or more. The recall of the model was 0.925, which means that out of all the properties that were actually sold for more than $500,000, the model correctly identified 92.5% of them.
+
+#The confusion matrix shows that the model predicted 173 properties as sold for more than $500,000, out of which 146 were actually sold for that price or more. The model also predicted 51 properties as sold for less than $500,000, out of which 40 were actually sold for less than that price.
+
+#The cross-validation score of the model was 0.806, which means that the model's performance was consistent across the different folds of the data.
+
+
+
+
+
+
+
+
+# %%
+### COVID Comparison
+
+
