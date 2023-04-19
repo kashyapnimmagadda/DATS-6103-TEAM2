@@ -45,7 +45,7 @@ GitHub Repo: https://github.com/kashyapnimmagadda/DATS-6103-TEAM2.git
 """
 Code Outline (current plan, may change):
 1. Setup
-2. Prepricessing
+2. Preprocessing
 3. EDA
 4. Descriptive Characteristics
 5. Modeling Sales Price (linear and multiple regression, maybe others)
@@ -95,6 +95,18 @@ sales["sale_year"] = sales["saledate"].dt.year
 sales["sale_month"] = sales["saledate"].dt.month
 sales["sale_day"] = sales["saledate"].dt.day
 
+#%%
+# Create a variable for the month name
+month_names = ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+
+sales["sale_named_month"] = sales["sale_month"].map(lambda x: month_names[x-1])
+
+# Convert to an ordered categorical variable
+sales["sale_named_month"] = pd.Categorical(sales["sale_named_month"], categories = month_names, ordered = True)
+
+sales["sale_named_month"].head()
+
+#%%
 # Create a boolean variable for if the property sold for a price over $)
 sales.insert(sales.columns.get_loc("price")+1, "with_price", sales["price"].apply(lambda x: False if x == 0 else True))
 
@@ -117,8 +129,7 @@ sales["num_days_passed"] = (sales["saledate"] - pd.Timestamp("2010/01/01 00:00:0
 ## Sales per year
 #%%
 print(sales["sale_year"].value_counts())
-# Make bar chart for this
-# Sales per year with price vs no price stacked bar chart
+
 #%%
 # Bar chart of sales per year
 year_graph_data = sales["sale_year"].value_counts().rename_axis(["sale_year"]).reset_index(name = "count")
@@ -128,15 +139,23 @@ year_graph.set(title = "Number of Sales by Year", xlabel = "Year")
 year_graph.set_xticks(range(0, 69, 5))
 plt.show()
 
-# I would love to iunclude a stacked bar chart based on with_price, but could not make it work.
-
 ## Other preprocessing (not sure what else is needed)
+
 
 #%%
 ## Removing unneeded variables and filtering
+# There are 20 rows in our subset that are missing the sale price. Given the imoprtance of this variable in our project and the small number of sales missing this data, it makes sense to filter out these rows
+
+# Number of rows in our subset missing sale price
+print(len(sales[(sales["sale_year"] >= 2010) & (sales["sale_year"] < 2023) & sales["price"].isnull()]))
+
+# We can add more variables this if we identify more unneeded variables
 cols_to_drop = ["ssl", "gis_last_mod_dttm", "objectid"]
 
-sales_trimmed = sales[(sales["sale_year"] >= 2010) & (sales["sale_year"] < 2023)].drop(cols_to_drop, axis = 1)
+# We will use this dataframe for the rest of the analysis
+sales_trimmed = sales[(sales["sale_year"] >= 2010) & (sales["sale_year"] < 2023) & sales["price"].notnull()].drop(cols_to_drop, axis = 1)
+
+
 
 #%%
 ### EDA
