@@ -466,6 +466,37 @@ print("Coefficients:", model.coef_)
 
 
 
+
+#%% 
+##  Adding to moodel  num_days_passed as predi
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(
+    sales_trimmed_with_price[['bathrm', 'bedrm', 'grade', 'heat', 'cndtn', 'gba' , 'num_days_passed']],
+    sales_trimmed_with_price['price'],
+    test_size=0.2,
+    random_state=42
+)
+
+# Instantiate the linear regression model
+model = LinearRegression()
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = model.predict(X_test)
+
+# Evaluate the model's performance
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("Mean squared error:", mse)
+print("R-squared:", r2)
+
+# Print the coefficients of the model
+print("Coefficients:", model.coef_)
+
 # %%
 # Gradient Boosting Classifier model for property was sold for more than $500,000 or not
 
@@ -528,9 +559,6 @@ print('Accuracy: %.3f (%.3f)' % (scores.mean(), scores.std()))
 #The confusion matrix shows that the model predicted 173 properties as sold for more than $500,000, out of which 146 were actually sold for that price or more. The model also predicted 51 properties as sold for less than $500,000, out of which 40 were actually sold for less than that price.
 
 #The cross-validation score of the model was 0.806, which means that the model's performance was consistent across the different folds of the data.
-
-
-
 
 
 
