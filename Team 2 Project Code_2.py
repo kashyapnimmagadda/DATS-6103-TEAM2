@@ -472,6 +472,11 @@ print(f"Coefficients: {fit4.coef_}")
 
 #By adding gross building area as an additional predictor, the performance of the model has improved, as indicated by the decrease in mean squared error and the increase in R-squared value. The coefficients of the model indicate that gross building area has the highest positive effect on price, followed by cndtn, grade, heat, bathrm, and bedrm. bedrm has a negative effect on price, which could indicate that more bedrooms are not always better for homebuyers, depending on other factors.
 
+#Which variables have an impact on sale price, and how strong is that impact? - Is there a correlation between the number of bedrooms and the sale price of a residential property in this dataset? - Is there a correlation between the grade and the sale price of a residential property in this dataset?
+
+#Yes, there is a correlation between the number of bedrooms and the sale price of a residential property in this dataset. However, the correlation is negative, meaning that as the number of bedrooms increases, the sale price tends to decrease.
+
+#Yes, there is a correlation between the grade and the sale price of a residential property in this dataset. The correlation is positive, meaning that as the grade of the property increases, the sale price tends to increase as well.
 
 
 #%% 
