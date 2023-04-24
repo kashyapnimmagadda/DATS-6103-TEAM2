@@ -459,14 +459,18 @@ y_pred = fit4.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
-print("Mean squared error:", mse)
-print("R-squared:", r2)
+# Print the summary
+print("=== Linear Regression Summary ===")
+print(f"Independent variables: {list(X_train.columns)}")
+print(f"Dependent variable: price")
+print(f"Training data size: {len(X_train)}")
+print(f"Test data size: {len(X_test)}")
+print(f"Mean squared error: {mse}")
+print(f"R-squared: {r2}")
+print(f"Coefficients: {fit4.coef_}")
 
-# Print the coefficients of the model
-print("Coefficients:", fit4.coef_)
 
 #By adding gross building area as an additional predictor, the performance of the model has improved, as indicated by the decrease in mean squared error and the increase in R-squared value. The coefficients of the model indicate that gross building area has the highest positive effect on price, followed by cndtn, grade, heat, bathrm, and bedrm. bedrm has a negative effect on price, which could indicate that more bedrooms are not always better for homebuyers, depending on other factors.
-
 
 
 
