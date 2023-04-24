@@ -510,7 +510,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.ensemble import GradientBoostingClassifier
-
+from sklearn.metrics import confusion_matrix
 # Define the predictor variables
 X = sales_trimmed_with_price[['bathrm', 'bedrm', 'gba', 'cndtn']]
 
@@ -541,10 +541,19 @@ print("Accuracy:", accuracy)
 print("Precision:", precision)
 print("Recall:", recall)
 
+
+# Create the confusion matrix
+confusion = confusion_matrix(y_test, y_pred)
+
+# Print the confusion matrix
+print('Confusion matrix for Gradient Boosting Classifier Model:')
+print(confusion)
+
 # Plot the confusion matrix
 plot_confusion_matrix(model_LG, X_test, y_test, cmap=plt.cm.Blues)
 plt.title('Confusion matrix for Gradient Boosting Classifier Model')
 plt.show()
+
 
 # Prepare the cross-validation procedure
 cv = KFold(n_splits=10, random_state=1, shuffle=True)
@@ -558,15 +567,15 @@ scores = cross_val_score(model_LG, X, y, cv=cv, n_jobs=-1)
 # Report performance
 print('Accuracy: %.3f (%.3f)' % (scores.mean(), scores.std()))
 
-#The output shows the performance of the Gradient Boosting Classifier model for predicting whether a property was sold for more than $500,000 or not.
+# The Gradient Boosting Classifier model performs well in predicting whether a property was sold for more than $500,000 or not.
 
-#The model achieved an accuracy of 0.812, which means that it correctly predicted 81.2% of the test cases. It also achieved a precision of 0.841, which means that out of all the properties that the model predicted were sold for more than $500,000, 84.1% of them were actually sold for that price or more. The recall of the model was 0.925, which means that out of all the properties that were actually sold for more than $500,000, the model correctly identified 92.5% of them.
+#The accuracy of the model is 0.81, which means that 81% of the time the model predicts correctly whether the property was sold for more than $500,000 or not.
 
-#The confusion matrix shows that the model predicted 173 properties as sold for more than $500,000, out of which 146 were actually sold for that price or more. The model also predicted 51 properties as sold for less than $500,000, out of which 40 were actually sold for less than that price.
+#The precision of the model is 0.84, which means that out of all the properties that the model predicted were sold for more than $500,000, 84% of them were actually sold for more than $500,000.
 
-#The cross-validation score of the model was 0.806, which means that the model's performance was consistent across the different folds of the data.
+#The recall of the model is 0.93, which means that out of all the properties that were actually sold for more than $500,000, 93% of them were correctly identified by the model.
 
-
+#The confusion matrix shows that out of a total of 5,692 properties in the test set, 4,624 were correctly classified by the model, while 1,068 were misclassified. Specifically, the model classified 675 properties as "sold for more than $500,000" when they were actually "not sold for more than $500,000", and 320 properties as "not sold for more than $500,000" when they were actually "sold for more than $500,000". On the other hand, the model classified 748 properties as "not sold for more than $500,000" when they were actually "sold for more than $500,000", and 3,949 properties as "sold for more than $500,000" when they were actually "sold for more than $500,000".
 
 
 
