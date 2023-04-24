@@ -539,62 +539,101 @@ print('Accuracy: %.3f (%.3f)' % (scores.mean(), scores.std()))
 # %%
 ### COVID Comparison
 # Split to 3 periods(Ex Ante, lockdown, Ex Post)
-ExAnte = sales_trimmed[(sales_trimmed["sale_year"] >= 2010) & (sales_trimmed["sale_year"] < 2020)]
-lockdown = sales_trimmed[(sales_trimmed["sale_year"] >= 2020) & (sales_trimmed["sale_year"] < 2021)]
-ExPost = sales_trimmed[(sales_trimmed["sale_year"] >= 2021) ]
 
-#sales_trimmed['sale_year'] = pd.to_datetime(sales_trimmed['sale_year'])
-sales["sale_year"] = sales["saledate"].dt.year
+from datetime import datetime
+sales["sale_year"] = sales["saledate"].dt.date
 
-sales_trimmed = sales[(sales["sale_year"] >= 2018) & (sales["sale_year"] <= 2023) & sales["price"].notnull()].drop(cols_to_drop, axis = 1)
-#bins = [pd.to_datetime('2019-01-01'), pd.to_datetime('2020-01-01'), pd.to_datetime('2022-01-01'), pd.to_datetime('2023-01-01')]
-sales_trimmed['period'] = pd.cut(sales_trimmed['sale_year'], bins=[2018,2020,2022,2023], labels=['ExAnte', 'Lock down', 'ExPost'])
+a=datetime.strptime('01-01-2019', '%m-%d-%Y').date()
+b=datetime.strptime('02-29-2020', '%m-%d-%Y').date()
+c=datetime.strptime('03-01-2020', '%m-%d-%Y').date()
+d=datetime.strptime('07-31-2020', '%m-%d-%Y').date()
+e=datetime.strptime('08-01-2020', '%m-%d-%Y').date()
+f=datetime.strptime('12-31-2022', '%m-%d-%Y').date()
+
+#d=pd.to_datetime('2022-12-31')
+
+sales_trimmed = sales[(sales["sale_year"] >=a) & (sales["sale_year"] <= f) & sales["price"].notnull()].drop(cols_to_drop, axis = 1)
+
+periods = [
+    {'start': a, 'end': b, 'name': 'ExAnte'},
+    {'start': c, 'end': d, 'name': 'Lock_down'},
+    {'start': e, 'end': f, 'name': 'ExPost'}
+]
+def assign_period(row):
+    sale_year = row['sale_year']
+    for period in periods:
+        if period['start'] <= sale_year <= period['end']:
+            return period['name']
+    return 'Unknown'
+
+sales_trimmed['period'] = sales_trimmed.apply(assign_period, axis=1)
 print(sales_trimmed['period'])
 
-sales_num_trimmed = sales[(sales["sale_year"] >= 2018) & (sales["sale_year"] <= 2023) & sales["sale_num"].notnull()].drop(cols_to_drop, axis = 1)
-sales_num_trimmed['period'] = pd.cut(sales_num_trimmed['sale_year'], bins=[2018,2020,2021,2023], labels=['ExAnte', 'Lock down', 'ExPost'])
+# %%
+sales_num_trimmed = sales[(sales["sale_year"] >= a) & (sales["sale_year"] <= f) & sales["sale_num"].notnull()].drop(cols_to_drop, axis = 1)
+
+def assign_period(row):
+    sale_year = row['sale_year']
+    for period in periods:
+        if period['start'] <= sale_year <= period['end']:
+            return period['name']
+    return 'Unknown'
+
+sales_num_trimmed['period'] = sales_num_trimmed.apply(assign_period, axis=1)
 print(sales_num_trimmed['period'])
 
-
-
 # %%
+
+
 ## Boxplot of residential sale prices in 3 periods(Ex Ante, lockdown, Ex Post)
 
-sns.boxplot(x="period", y="price", data=sales_trimmed)
+g=datetime.strptime('01-01-2019', '%m-%d-%Y').date()
+h=datetime.strptime('12-31-2019', '%m-%d-%Y').date()
+i=datetime.strptime('12-31-2020', '%m-%d-%Y').date()
+j=datetime.strptime('12-31-2021', '%m-%d-%Y').date()
+k=datetime.strptime('12-31-2022', '%m-%d-%Y').date()
+years=[g,h,i,j]
+
+sales_trimmed['Real_price'] = sales_trimmed.apply(lambda row: row['price'] /1.018 if row['sale_year'] < h and row['sale_year']>=g
+                           else row['price'] /1.012 if row['sale_year'] < i and row['sale_year']>=h
+                           else row['price'] /1.047 if row['sale_year'] < j and row['sale_year']>=i
+                           else row['price'] /1.08, axis=1)
+
+
+sales_trimmed['Inflation'] = sales_trimmed.apply(lambda row: 1.018 if row['sale_year'] < h and row['sale_year']>=g
+                           else 1.012 if row['sale_year'] < i and row['sale_year']>=h
+                           else 1.047 if row['sale_year'] < j and row['sale_year']>=i
+                           else 1.08, axis=1)
+
+
+# %%
+sns.boxplot(x="period", y="Real_price", data=sales_trimmed)
 plt.title("Sale Price by period")
 plt.xlabel("Period")
-plt.ylabel("Sale Price")
+plt.ylabel("Sale Price(real)")
 plt.show()
 # %%
-
-sns.boxplot(x="bathrm", y="price",hue="period", data=sales_trimmed, palette="pastel")
+sns.boxplot(x="bathrm", y="Real_price",hue="period", data=sales_trimmed, palette="pastel")
 plt.title("Sale Price by period")
-plt.xlabel("Number of bethroom")
+plt.xlabel("Number of bathroom")
 plt.ylabel("Sale Price")
 plt.show()
 # %%
-sns.boxplot(x="bedrm", y="price",hue="period", palette="pastel", data=sales_trimmed)
+sns.boxplot(x="bedrm", y="Real_price",hue="period", palette="pastel", data=sales_trimmed)
 plt.title("Sale Price by period")
 plt.xlabel("Number of bedroom")
 plt.ylabel("Sale Price")
 plt.show()
 # %%
-sns.boxplot(x="gba", y="price",hue="period", data=sales_trimmed)
-plt.title("Sale Price by Number of gba")
-plt.xlabel("gba")
-plt.ylabel("Sale Price")
-plt.show()
-# %%
-sns.boxplot(x="cndtn", y="price",hue="period", data=sales_trimmed)
+
+sns.boxplot(x="cndtn", y="Real_price",hue="period", data=sales_trimmed)
 plt.title("Sale Price by  Condition of the House")
 plt.xlabel("cndtn")
 plt.ylabel("Sale Price")
 plt.show()
 # %%
 
-
-
-## Boxplot of residential sale number in 3 periods(Ex Ante, lockdown, Ex Post)
+## Boxplot of residential saliling number in 3 periods(Ex Ante, lockdown, Ex Post)
 
 sns.boxplot(x="period", y="sale_num", data=sales_num_trimmed)
 plt.title("Sale Number by period")
@@ -614,12 +653,7 @@ plt.xlabel("Number of bedroom")
 plt.ylabel("Sale Price")
 plt.show()
 # %%
-sns.boxplot(x="gba", y="sale_num",hue="period", data=sales_num_trimmed)
-plt.title("Sale Price by Number of gba")
-plt.xlabel("gba")
-plt.ylabel("Sale Price")
-plt.show()
-# %%
+
 sns.boxplot(x="cndtn", y="sale_num",hue="period", data=sales_num_trimmed)
 plt.title("Sale Price by  Condition of the House")
 plt.xlabel("cndtn")
@@ -630,7 +664,7 @@ plt.show()
 # Anova test of residential sale prices in 3 periods(Ex Ante, lockdown, Ex Post)
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
-model_1 = ols('price ~ C(period)', data=sales_trimmed).fit()
+model_1 = ols('Real_price ~ C(period)', data=sales_trimmed).fit()
 anova_table = sm.stats.anova_lm(model_1, typ=2)
 anova_table
 # %%
@@ -638,9 +672,12 @@ model_2 = ols('sale_num ~ C(period)', data=sales_num_trimmed).fit()
 anova_table = sm.stats.anova_lm(model_2, typ=2)
 anova_table
 # %%
+
+# Impact of Covid on housing price and saliling number
 from statsmodels.formula.api import glm
-fitmodel=glm(formula='price ~ C(period)', data=sales_trimmed)
-fitmodel.summary()
-fitmode2=glm(formula='sale_num ~ C(period)', data=sales_num_trimmed)
-fitmode2.summary()
+model3=glm(formula='Real_price ~C(period)+bathrm+bedrm+cndtn+gba', data=sales_trimmed).fit()
+print(model3.summary())
+model4=glm(formula='sale_num ~C(period)+bathrm+bedrm+cndtn+gba', data=sales_num_trimmed).fit()
+print(model4.summary())
+
 # %%
