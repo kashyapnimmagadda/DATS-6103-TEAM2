@@ -328,6 +328,7 @@ plt.ylabel('Price')
 plt.show()
 
 # %%
+### Modeling
 ### Building LR Model as price as indep to addrees the SMART Q
 # Import required libraries
 
@@ -342,13 +343,13 @@ sales_trimmed_with_price = sales_trimmed_with_price.dropna()
 X_train, X_test, y_train, y_test = train_test_split(sales_trimmed_with_price[['bathrm', 'bedrm', 'grade']], sales_trimmed_with_price['price'], test_size=0.2, random_state=42)
 
 # Instantiate the linear regression model
-model = LinearRegression()
+fit1 = LinearRegression()
 
 # Fit the model to the training data
-model.fit(X_train, y_train)
+fit1.fit(X_train, y_train)
 
 # Make predictions on the test data
-y_pred = model.predict(X_test)
+y_pred = fit1.predict(X_test)
 
 # Evaluate the model's performance
 mse = mean_squared_error(y_test, y_pred)
@@ -358,11 +359,13 @@ print("Mean squared error:", mse)
 print("R-squared:", r2)
 
 
-##Interp: The output shows the Mean Squared Error (MSE) and R-squared values of the linear regression model.
+#This code is building a simple linear regression model to predict the price of a house based on three features: the number of bathrooms, the number of bedrooms, and the grade of the house.
 
-#The mean squared error measures the average of the squared differences between the predicted values and actual values of the target variable. The MSE value of 2.2  (approximately) means that, on average, the model's predictions are off by about 14.9 million dollars from the actual price of the property.
+#First, the code drops any rows in the dataset that have missing values. Then it splits the data into training and test sets, with 20% of the data set aside for testing. It uses the LinearRegression class from scikit-learn to create an instance of the linear regression model. It fits the model to the training data using the fit() method.
 
-#The R-squared value is a statistical measure that represents the proportion of variance in the target variable that is explained by the predictor variables. In this case, the R-squared value of 0.58 means that the model explains 58% of the variance in the target variable, while the remaining 42% of the variance is unexplained by the model. This indicates that the model may not be capturing all the important factors that determine the price of a property.
+#After that, it makes predictions on the test data using the predict() method and evaluates the model's performance by calculating the mean squared error and the R-squared value. Finally, it prints out the coefficients of the model.
+
+#The mean squared error value of 222491369275.88037 suggests that the model's predictions are not very accurate, while the R-squared value of 0.5834562818092962 indicates that the model explains about 58.3% of the variance in the target variable.
 
 # %%
 ## addin heat as predictor 
@@ -372,13 +375,13 @@ print("R-squared:", r2)
 X_train, X_test, y_train, y_test = train_test_split(sales_trimmed_with_price[['bathrm', 'bedrm', 'grade', 'heat']], sales_trimmed_with_price['price'], test_size=0.2, random_state=42)
 
 # Instantiate the linear regression model
-model = LinearRegression()
+fit2 = LinearRegression()
 
 # Fit the model to the training data
-model.fit(X_train, y_train)
+fit2.fit(X_train, y_train)
 
 # Make predictions on the test data
-y_pred = model.predict(X_test)
+y_pred = fit2.predict(X_test)
 
 # Evaluate the model's performance
 mse = mean_squared_error(y_test, y_pred)
@@ -386,7 +389,9 @@ r2 = r2_score(y_test, y_pred)
 
 print("Mean squared error:", mse)
 print("R-squared:", r2)
-##The new output shows that adding the 'heat' variable did not have a significant impact on the model's performance as the Mean Squared Error (MSE) and R-squared values are almost similar to the previous model's output. The MSE value of 2.22  (approximately) means that, on average, the model's predictions are off by about 14.9 million dollars from the actual price of the property. The R-squared value of 0.58 means that the model explains 58.4% of the variance in the target variable, while the remaining 41.6% of the variance is unexplained by the model. This indicates that there may be other important factors that influence the price of a property that the model has not captured.
+
+#Adding the "heat" variable as a predictor didn't seem to have a significant impact on the model's performance, as the mean squared error and R-squared values are only slightly different from the previous model.
+
 # %%
 #updated code that includes heat and cndtn as additional predictor variables:
 
@@ -400,13 +405,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Instantiate the linear regression model
-model = LinearRegression()
+fit3 = LinearRegression()
 
 # Fit the model to the training data
-model.fit(X_train, y_train)
+fit3.fit(X_train, y_train)
 
 # Make predictions on the test data
-y_pred = model.predict(X_test)
+y_pred = fit3.predict(X_test)
 
 # Evaluate the model's performance
 mse = mean_squared_error(y_test, y_pred)
@@ -416,7 +421,7 @@ print("Mean squared error:", mse)
 print("R-squared:", r2)
 
 # Print the coefficients of the model
-print("Coefficients:", model.coef_)
+print("Coefficients:", fit3.coef_)
 #Based on the output, we can see that the model with the additional predictor variables (heat and cndtn) has a lower mean squared error and a higher R-squared value compared to the model with only bathrm, bedrm, and grade. This suggests that the inclusion of heat and cndtn as predictor variables has improved the model's ability to predict the sale price of residential properties.
 
 #To answer the specific questions:
@@ -442,13 +447,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Instantiate the linear regression model
-model = LinearRegression()
+fit4 = LinearRegression()
 
 # Fit the model to the training data
-model.fit(X_train, y_train)
+fit4.fit(X_train, y_train)
 
 # Make predictions on the test data
-y_pred = model.predict(X_test)
+y_pred = fit4.predict(X_test)
 
 # Evaluate the model's performance
 mse = mean_squared_error(y_test, y_pred)
@@ -458,11 +463,9 @@ print("Mean squared error:", mse)
 print("R-squared:", r2)
 
 # Print the coefficients of the model
-print("Coefficients:", model.coef_)
+print("Coefficients:", fit4.coef_)
 
-#The updated model includes the "GBA" variable as an additional predictor variable to investigate its impact on sale price. The output shows an improved performance of the model with a lower mean squared error of approximately 1.64 and a higher R-squared value of approximately 0.69. This indicates that the addition of the "GBA" variable has improved the model's ability to explain the variance in the target variable.
-
-#The coefficients of the model suggest that the "GBA" variable has a positive impact on the sale price, with a coefficient value of 250701.29. This means that, on average, for every one-unit increase in the gross building area, the sale price of the property is expected to increase by approximately $250,701.
+#By adding gross building area as an additional predictor, the performance of the model has improved, as indicated by the decrease in mean squared error and the increase in R-squared value. The coefficients of the model indicate that gross building area has the highest positive effect on price, followed by cndtn, grade, heat, bathrm, and bedrm. bedrm has a negative effect on price, which could indicate that more bedrooms are not always better for homebuyers, depending on other factors.
 
 
 
@@ -479,13 +482,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Instantiate the linear regression model
-model = LinearRegression()
+fit5 = LinearRegression()
 
 # Fit the model to the training data
-model.fit(X_train, y_train)
+fit5.fit(X_train, y_train)
 
 # Make predictions on the test data
-y_pred = model.predict(X_test)
+y_pred = fit5.predict(X_test)
 
 # Evaluate the model's performance
 mse = mean_squared_error(y_test, y_pred)
@@ -495,7 +498,10 @@ print("Mean squared error:", mse)
 print("R-squared:", r2)
 
 # Print the coefficients of the model
-print("Coefficients:", model.coef_)
+print("Coefficients:", fit5.coef_)
+
+#A change in R-squared of 0.0365 (from 0.6929 to 0.7294) can be considered a moderate to large improvement in the model's predictive power, especially if the dataset is large enough to provide a robust evaluation.
+
 
 # %%
 # Gradient Boosting Classifier model for property was sold for more than $500,000 or not
@@ -518,13 +524,13 @@ y = (sales_trimmed_with_price['price'] > threshold).astype(int)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Instantiate the Gradient Boosting Classifier model
-model = GradientBoostingClassifier()
+model_LG= GradientBoostingClassifier()
 
 # Fit the model to the training data
-model.fit(X_train, y_train)
+model_LG.fit(X_train, y_train)
 
 # Make predictions on the test data
-y_pred = model.predict(X_test)
+y_pred = model_LG.predict(X_test)
 
 # Evaluate the model's performance
 accuracy = accuracy_score(y_test, y_pred)
@@ -536,7 +542,7 @@ print("Precision:", precision)
 print("Recall:", recall)
 
 # Plot the confusion matrix
-plot_confusion_matrix(model, X_test, y_test, cmap=plt.cm.Blues)
+plot_confusion_matrix(model_LG, X_test, y_test, cmap=plt.cm.Blues)
 plt.title('Confusion matrix for Gradient Boosting Classifier Model')
 plt.show()
 
@@ -544,10 +550,10 @@ plt.show()
 cv = KFold(n_splits=10, random_state=1, shuffle=True)
 
 # Instantiate the Gradient Boosting Classifier model
-model = GradientBoostingClassifier()
+model_LG = GradientBoostingClassifier()
 
 # Evaluate the model using cross-validation
-scores = cross_val_score(model, X, y, cv=cv, n_jobs=-1)
+scores = cross_val_score(model_LG, X, y, cv=cv, n_jobs=-1)
 
 # Report performance
 print('Accuracy: %.3f (%.3f)' % (scores.mean(), scores.std()))
