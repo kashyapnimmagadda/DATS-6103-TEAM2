@@ -330,6 +330,8 @@ plt.show()
 # %%
 ### Modeling
 ### Building LR Model as price as indep to addrees the SMART Q
+#This code is building a simple linear regression model to predict the price of a house based on three features: the number of bathrooms, the number of bedrooms, and the grade of the house.
+
 # Import required libraries
 
 from sklearn.linear_model import LinearRegression
@@ -358,17 +360,10 @@ r2 = r2_score(y_test, y_pred)
 print("Mean squared error:", mse)
 print("R-squared:", r2)
 
-
-#This code is building a simple linear regression model to predict the price of a house based on three features: the number of bathrooms, the number of bedrooms, and the grade of the house.
-
-#First, the code drops any rows in the dataset that have missing values. Then it splits the data into training and test sets, with 20% of the data set aside for testing. It uses the LinearRegression class from scikit-learn to create an instance of the linear regression model. It fits the model to the training data using the fit() method.
-
-#After that, it makes predictions on the test data using the predict() method and evaluates the model's performance by calculating the mean squared error and the R-squared value. Finally, it prints out the coefficients of the model.
-
 #The mean squared error value of 222491369275.88037 suggests that the model's predictions are not very accurate, while the R-squared value of 0.5834562818092962 indicates that the model explains about 58.3% of the variance in the target variable.
 
 # %%
-## addin heat as predictor 
+## Adding heat as predictor 
 
 
 # Split the data into training and test sets
@@ -393,7 +388,7 @@ print("R-squared:", r2)
 #Adding the "heat" variable as a predictor didn't seem to have a significant impact on the model's performance, as the mean squared error and R-squared values are only slightly different from the previous model.
 
 # %%
-#updated code that includes heat and cndtn as additional predictor variables:
+#Updated the code that includes heat and cndtn as additional predictor variables:
 
 
 # Split the data into training and test sets
@@ -422,20 +417,18 @@ print("R-squared:", r2)
 
 # Print the coefficients of the model
 print("Coefficients:", fit3.coef_)
+
 #Based on the output, we can see that the model with the additional predictor variables (heat and cndtn) has a lower mean squared error and a higher R-squared value compared to the model with only bathrm, bedrm, and grade. This suggests that the inclusion of heat and cndtn as predictor variables has improved the model's ability to predict the sale price of residential properties.
 
-#To answer the specific questions:
-
-#Is there a correlation between the number of bedrooms and the sale price of a residential property in this dataset?
-#The coefficient for bedrm in the model is 13,941. This means that, all other variables being equal, a one-unit increase in the number of bedrooms is associated with a $13,941 increase in the sale price of the property. This indicates that there is a positive correlation between the number of bedrooms and the sale price of a residential property in this dataset.
 
 #Is there a correlation between the grade and the sale price of a residential property in this dataset?
 #The coefficient for grade in the model is 303,631. This means that, all other variables being equal, a one-unit increase in the grade is associated with a $303,631 increase in the sale price of the property. This indicates that there is a strong positive correlation between the grade and the sale price of a residential property in this dataset.
 
-#Is there a correlation between gross building area and sale price?
-#Gross building area is not included as a predictor variable in the model. Therefore, we cannot determine the correlation between gross building area and sale price based on this model.
+
+
 # %%
-# Adding  gross building area another predictor 
+
+# Adding  gross building area (gba) as another predictor to the model: 
 
 
 # Split the data into training and test sets
@@ -472,15 +465,15 @@ print(f"Coefficients: {fit4.coef_}")
 
 #By adding gross building area as an additional predictor, the performance of the model has improved, as indicated by the decrease in mean squared error and the increase in R-squared value. The coefficients of the model indicate that gross building area has the highest positive effect on price, followed by cndtn, grade, heat, bathrm, and bedrm. bedrm has a negative effect on price, which could indicate that more bedrooms are not always better for homebuyers, depending on other factors.
 
-#Which variables have an impact on sale price, and how strong is that impact? - Is there a correlation between the number of bedrooms and the sale price of a residential property in this dataset? - Is there a correlation between the grade and the sale price of a residential property in this dataset?
 
-#Yes, there is a correlation between the number of bedrooms and the sale price of a residential property in this dataset. However, the correlation is negative, meaning that as the number of bedrooms increases, the sale price tends to decrease.
 
-#Yes, there is a correlation between the grade and the sale price of a residential property in this dataset. The correlation is positive, meaning that as the grade of the property increases, the sale price tends to increase as well.
+# There is a correlation between the number of bedrooms and the sale price of a residential property in this dataset. However, the correlation is negative, meaning that as the number of bedrooms increases, the sale price tends to decrease.
+
+# There is a correlation between the grade and the sale price of a residential property in this dataset. The correlation is positive, meaning that as the grade of the property increases, the sale price tends to increase as well.
 
 
 #%% 
-##  Adding to moodel  num_days_passed as predi
+##  Adding num_days_passed as predictor to the model: 
 
 # Split the data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(
@@ -509,11 +502,11 @@ print("R-squared:", r2)
 # Print the coefficients of the model
 print("Coefficients:", fit5.coef_)
 
-#A change in R-squared of 0.0365 (from 0.6929 to 0.7294) can be considered a moderate to large improvement in the model's predictive power, especially if the dataset is large enough to provide a robust evaluation.
+# A change in R-squared of 0.0365 (from 0.6929 to 0.7294) can be considered a moderate to large improvement in the model's predictive power, especially if the dataset is large enough to provide a robust evaluation.
 
 
 # %%
-# Gradient Boosting Classifier model for property was sold for more than $500,000 or not
+# Building a Logistic Regression model for property was sold for more than $500,000 or not
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.model_selection import cross_val_score, KFold
@@ -576,7 +569,7 @@ scores = cross_val_score(model_LG, X, y, cv=cv, n_jobs=-1)
 # Report performance
 print('Accuracy: %.3f (%.3f)' % (scores.mean(), scores.std()))
 
-# The Gradient Boosting Classifier model performs well in predicting whether a property was sold for more than $500,000 or not.
+# The model performs well in predicting whether a property was sold for more than $500,000 or not.
 
 #The accuracy of the model is 0.81, which means that 81% of the time the model predicts correctly whether the property was sold for more than $500,000 or not.
 
