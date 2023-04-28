@@ -1,6 +1,7 @@
 #%%[markdown]
 # DATS-6103-11 Group Project - Team 2
 # Spring 2023
+# Professor Ning Rui
 # Group members: Muhannad Alwhebie, Brian Gulko, Mengfei Hung, Kashyap Nimmagadda
 # The George Washington University - Data Science Program
 
@@ -10,12 +11,10 @@ Our project uses data from Open Data DC and describes the sale history for activ
 """
 
 """
-SMART Questions (from our topic proposal, may be modified as we go):
+SMART Questions (updated from the original ones in our topic proposal):
 1.	What are the characteristics of an average residential property?
-    - Which heating type is the most common in residential properties in this dataset, and what is the percentage of properties with this heating type?
-    - What is the average number of bathrooms and half-bathrooms in residential properties in this dataset?
-    - What is the average land area of residential properties in this dataset, and how does this vary by number of bedrooms?
-    - How has the gross building area of residential properties in this dataset changed over time?
+    - What is the average number of bathrooms in residential properties in this dataset?
+    - What is the average number of bedrooms/GBA/rooms in residential properties in this dataset?
 
 2.	Which variables have an impact on sale price, and how strong is that impact?
     - Is there a correlation between the number of bedrooms and the sale price of a residential property in this dataset?
@@ -23,13 +22,11 @@ SMART Questions (from our topic proposal, may be modified as we go):
     - Is there a correlation between gross building area and sale price?
 
 3.	Did COVID-19 have an impact on residential sale prices? If so how big was that impact?
-    - How did the average grade of residential properties sold in the District of Columbia change during the COVID-19 pandemic, and was this related to changes in sale price?
 
 Instructor's feedback: 
     - Nice job in setting up the descriptive and inferential statistical questions and subquestions separately.
     - In addition to questions related to association of specific attributes and sale price, you may consider a question related to feature selection and ranking. In other words, what attributes are most predictive of sales price after adjustment of other related attributes?
     - For the third question, please clarify what role grade of the property has in the impact analysis. Is it tested as a mediator or moderator of the association of pandemic and sale price? Do we need to adjust for inflation when you compare the pre- and post comparison?
-
 """
 
 """
@@ -44,27 +41,19 @@ GitHub Repo: https://github.com/kashyapnimmagadda/DATS-6103-TEAM2.git
 """
 
 """
-Code Outline (current plan, may change):
+Code Outline:
 1. Setup
 2. Preprocessing
 3. EDA
 4. Descriptive Characteristics
-5. Modeling Sales Price (linear and multiple regression, maybe others)
-6. Modeling if the property sold for a price (logistic regression, classification tree, maybe others)
-7. COVID Comparison
-"""
-
-"""
-Data Dictionary:
-To add using descriptions from https://www.arcgis.com/sharing/rest/content/items/c5fb3fbe4c694a59a6eef7bf5f8bc49a/info/metadata/metadata.xml?format=default&output=html
+5. Modeling Sales Price
+6. COVID Comparison
 """
 
 """
 Notes:
 - We will use 2010 through 2022 for our analysis.
 - For sale price, filter out properties that sold for $0.
-- Linear and multiple regression for sale price for homes that sold for more than $0
-- Logistic regression for if the property sold for a price
 """
 
 ### Setup
@@ -140,12 +129,10 @@ year_graph.set(title = "Number of Sales by Year", xlabel = "Year")
 year_graph.set_xticks(range(0, 69, 5))
 plt.show()
 
-## Other preprocessing (not sure what else is needed)
-
 
 #%%
 ## Removing unneeded variables and filtering
-# There are 20 rows in our subset that are missing the sale price. Given the imoprtance of this variable in our project and the small number of sales missing this data, it makes sense to filter out these rows
+# There are 20 rows in our subset that are missing the sale price. Given the importance of this variable in our project and the small number of sales missing this data, it makes sense to filter out these rows
 
 # Number of rows in our subset missing sale price
 print(len(sales[(sales["sale_year"] >= 2010) & (sales["sale_year"] < 2023) & sales["price"].isnull()]))
