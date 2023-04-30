@@ -640,56 +640,56 @@ sales_trimmed['Inflation'] = sales_trimmed.apply(lambda row: 1.018 if row['sale_
 
 # %%
 sns.boxplot(x="period", y="Real_price", data=sales_trimmed)
-plt.title("Sale Price by period")
+plt.title("Sale Price by Period")
 plt.xlabel("Period")
 plt.ylabel("Sale Price(real)")
 plt.show()
 # %%
 sns.boxplot(x="bathrm", y="Real_price",hue="period", data=sales_trimmed, palette="pastel")
-plt.title("Sale Price by period")
-plt.xlabel("Number of bathroom")
+plt.title("Sale Price by Period")
+plt.xlabel("Number of Bathrooms")
 plt.ylabel("Sale Price")
 plt.show()
 # %%
 sns.boxplot(x="bedrm", y="Real_price",hue="period", palette="pastel", data=sales_trimmed)
-plt.title("Sale Price by period")
-plt.xlabel("Number of bedroom")
+plt.title("Sale Price by Period")
+plt.xlabel("Number of Bedrooms")
 plt.ylabel("Sale Price")
 plt.show()
 # %%
 
 sns.boxplot(x="cndtn", y="Real_price",hue="period", data=sales_trimmed)
-plt.title("Sale Price by  Condition of the House")
-plt.xlabel("cndtn")
+plt.title("Sale Price by Period")
+plt.xlabel("House Condition")
 plt.ylabel("Sale Price")
 plt.show()
 # %%
 
-## Boxplot of residential saliling number in 3 periods(Ex Ante, lockdown, Ex Post)
+## Boxplot of residential sales numbers in 3 periods(Ex Ante, lockdown, Ex Post)
 
 sns.boxplot(x="period", y="sale_num", data=sales_num_trimmed)
-plt.title("Sale Number by period")
-plt.xlabel("period")
-plt.ylabel("Sale Number")
+plt.title("Sale Volume by Period")
+plt.xlabel("Period")
+plt.ylabel("Sales Volume")
 plt.show()
 # %%
 sns.boxplot(x="bathrm", y="sale_num",hue="period", data=sales_num_trimmed)
-plt.title("Sale Price by period")
-plt.xlabel("Number of bethroom")
-plt.ylabel("Sale Price")
+plt.title("Sale Volume by Period")
+plt.xlabel("Number of Bethrooms")
+plt.ylabel("Sale Volume")
 plt.show()
 # %%
 sns.boxplot(x="bedrm", y="sale_num",hue="period", data=sales_num_trimmed)
-plt.title("Sale Price by period")
-plt.xlabel("Number of bedroom")
-plt.ylabel("Sale Price")
+plt.title("Sale Volume by Period")
+plt.xlabel("Number of Bedrooms")
+plt.ylabel("Sale Volume")
 plt.show()
 # %%
 
 sns.boxplot(x="cndtn", y="sale_num",hue="period", data=sales_num_trimmed)
-plt.title("Sale Price by  Condition of the House")
-plt.xlabel("cndtn")
-plt.ylabel("Sale Price")
+plt.title("Sale Volume by Period")
+plt.xlabel("House Condition")
+plt.ylabel("Sale Volume")
 plt.show()
 # %%
 
